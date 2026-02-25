@@ -1,6 +1,6 @@
 
 import './App.css';
-import { useReducer, useState ,useCallback,} from 'react';
+import { useReducer, useState ,useCallback,useRef} from 'react';
 import videoDB from './data/data';
 
 import AddVideo from './components/AddVideo';
@@ -14,6 +14,8 @@ function App() {
   console.log('render App')
   const [mode, setMode] = useState('darkMode');
   const [editableVideo, setEditableVideo] = useState(null);
+   const inputRef = useRef(null);
+
 
   function videoReducer(videos, action) {
     switch (action.type) {

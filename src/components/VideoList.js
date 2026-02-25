@@ -2,9 +2,9 @@ import Video from "./Video";
 import PlayButton from "./PlayButton";
 import useVideos from "../hooks/Videos";
 import axios from 'axios';
-import {useState, useEffect, useCallback, useMemo} from 'react';
+import { useState, useMemo, useEffect, useCallback, useMemouseDeferredValue, useTransition } from 'react';
 import useVideoDispatch from "../hooks/VideoDispatch";
-
+import moreVideos from '../data/moredata';
 // function VideoList({videos,dispatch,editVideo}){
 
 //     return(
@@ -34,51 +34,51 @@ import useVideoDispatch from "../hooks/VideoDispatch";
 // }
 
 
-function VideoList({editVideo}){
-  const url = "https://jsonplaceholder.typicode.com/posts";
-   const videos = useVideos()
-   const dispatch = useVideoDispatch();
+function VideoList({ editVideo }) {
 
-   async function handleClick (){
-    const res = await axios.get(url);
-    console.log('getVideos', res.data)
-    dispatch({type:'LOAD',payload:res.data})
-   }
+    // const videos = useVideos();
+    const dispatch = useVideoDispatch();
+    const [isPending, startTransition] = useTransition();
+    // const defVideos =  useDeferredValue(videos)
+    const [videos, setVideos] = useState([]);
 
-  useEffect(()=>{
-    async function getVideos (){
-      const res = await axios.get(url);
-      console.log('getVideos', res.data)
-      dispatch({type:'LOAD',payload:res.data})
-     }
-     getVideos()
-  },[dispatch])
-  const play = useCallback(() => console.log('Playing..'), []);
-  const pause = useCallback(() => console.log('Pause..'), []);
-  const memoButton = useMemo(() => (
-    <PlayButton onPlay={play} onPause={pause}>
-      Play
-    </PlayButton>
-  ),[pause, play]);
-return(
+    function getVideos() {
+        //  dispatch({ type: 'LOAD', payload: moreVideos  });
+        startTransition(() => {
+            setVideos(moreVideos)
+        })
+
+    }
+
+    useEffect(() => {
+
+    }, [dispatch]);
+    const play = useCallback(() => console.log('Playing..'), []);
+    const pause = useCallback(() => console.log('Pause..'), []);
+    const memoButton = useMemo(() => (
+        <PlayButton onPlay={play} onPause={pause}>
+            Play
+        </PlayButton>
+    ), [pause, play]);
+    return (
         <>
-        {videos.map((video) => (
-            <Video
-              key={video.id}
-              title={video.title}
-              views={video.views}
-              time={video.time}
-              channel={video.channel}
-              verified={video.verified}
-              id={video.id}
-              editVideo={editVideo}
-            >
-              {memoButton}
-              
-            </Video>
-          ))}
-           <button onClick={handleClick}>Get Videos</button>
-          </>
+            {videos.map((video) => (
+                <Video
+                    key={video.id}
+                    title={video.title}
+                    views={video.views}
+                    time={video.time}
+                    channel={video.channel}
+                    verified={video.verified}
+                    id={video.id}
+                    editVideo={editVideo}
+                >
+                    {memoButton}
+
+                </Video>
+            ))}
+            <button onClick={getVideos}>{isPending ?'Getting...': 'Get Videos'}</button>
+        </>
     )
 }
 export default VideoList
