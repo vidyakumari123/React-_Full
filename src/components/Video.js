@@ -1,4 +1,4 @@
-import { useContext , useEffect,memo } from 'react';
+import { useContext ,useRef, useId, useEffect,memo ,useLayoutEffect} from 'react';
 
 import ThemeContext from '../context/ThemeContext';
 import useVideoDispatch from '../hooks/VideoDispatch';
@@ -9,7 +9,13 @@ const Video = memo(function Video({title,id,channel="Coder Dost",views,time,veri
    const theme = useContext(ThemeContext)
    const dispatch = useVideoDispatch()
 
+ const ref = useRef(null);
+  const uid = useId();
 
+  // useLayoutEffect(() => {
+  //   const { height } = ref.current.getBoundingClientRect();
+  //   console.log(height)
+  // }, []);
 
       
   //  useEffect(()=>{
@@ -24,7 +30,7 @@ const Video = memo(function Video({title,id,channel="Coder Dost",views,time,veri
   //  },[id])
   return (
     <>
-      <div className={`container ${theme}`}>
+      <div id={uid} ref={ref} className={`container ${theme}`}>
         <button className='close' onClick={()=>dispatch({type:'DELETE',payload:id})}>X</button>
         <button className='edit' onClick={() => editVideo(id)}>Edit</button>
         <div className="pic">

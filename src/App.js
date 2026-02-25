@@ -1,6 +1,6 @@
 
 import './App.css';
-import { useReducer, useState ,useCallback,useRef} from 'react';
+import { useReducer, useState, useRef,useCallback, lazy,Suspense } from 'react';
 import videoDB from './data/data';
 
 import AddVideo from './components/AddVideo';
@@ -10,11 +10,14 @@ import ThemeContext from './context/ThemeContext';
 import VideosContext from './context/VideosContext';
 import VideoDispatchContext from './context/VideoDispatchContext';
 import Counter from './components/Counter';
+const Dummy = lazy(() => import('./components/Dummy.js'));
+
 function App() {
   console.log('render App')
   const [mode, setMode] = useState('darkMode');
   const [editableVideo, setEditableVideo] = useState(null);
-   const inputRef = useRef(null);
+  const [show, setShow] = useState(false);
+  const inputRef = useRef(null);
 
 
   function videoReducer(videos, action) {
@@ -43,9 +46,9 @@ function App() {
   const [videos, dispatch] = useReducer(videoReducer, [])
 
 
-   const editVideo = useCallback(function editVideo(id) {
+  const editVideo = useCallback(function editVideo(id) {
     setEditableVideo(videos.find((video) => video.id === id));
-  },[videos])
+  }, [videos])
 
   return (
     <ThemeContext.Provider value={mode}>
@@ -66,6 +69,12 @@ function App() {
             <VideoList
               editVideo={editVideo}
             ></VideoList>
+             <button onClick={()=>setShow(true)}>Show</button>
+          {show?
+          <Suspense fallback={<>Loading.......</>}>
+          <Dummy/>
+          </Suspense>
+          :null}
           </div>
         </VideoDispatchContext.Provider>
       </VideosContext.Provider>
