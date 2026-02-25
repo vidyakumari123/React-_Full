@@ -1,15 +1,17 @@
 import './PlayButton.css';
+import { useState } from 'react';
 
 function PlayButton({message,children,onPlay,onPause}){
-    let playing = false;  // don't use this approach;
+    // let playing = false;  // don't use this approach;
+      const [playing, setPlaying] = useState(false);
+    
     function handleClick(e){
         console.log(e)
         e.stopPropagation()
 
         if(playing) onPause()
         else onPlay();
-
-        playing = !playing;
+setPlaying(!playing)
     }
 
     return (
