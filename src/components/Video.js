@@ -7,6 +7,18 @@ import './Video.css';
 function Video({ title, id, channel = "Coder Dost", views, time, verified, children,editVideo }) {
     const theme = useContext(ThemeContext)
       const dispatch = useVideoDispatch()
+
+      
+  //  useEffect(()=>{
+  //     const idx= setInterval(()=>{
+  //       console.log('video playing', id)
+  //     },3000)
+      
+  //     return ()=>{
+  //         clearInterval(idx)
+  //      }
+
+  //  },[id])
   return (
     <>
       <div className={`container ${theme}`}>

@@ -1,6 +1,9 @@
 import Video from "./Video";
 import PlayButton from "./PlayButton";
 import useVideos from "../hooks/Videos";
+import axios from 'axios';
+import {useState, useEffect} from 'react';
+import useVideoDispatch from "../hooks/VideoDispatch";
 
 // function VideoList({videos,dispatch,editVideo}){
 
@@ -32,7 +35,25 @@ import useVideos from "../hooks/Videos";
 
 
 function VideoList({editVideo}){
-const videos = useVideos()
+  const url = "https://jsonplaceholder.typicode.com/posts";
+   const videos = useVideos()
+   const dispatch = useVideoDispatch();
+
+   async function handleClick (){
+    const res = await axios.get(url);
+    console.log('getVideos', res.data)
+    dispatch({type:'LOAD',payload:res.data})
+   }
+
+  useEffect(()=>{
+    async function getVideos (){
+      const res = await axios.get(url);
+      console.log('getVideos', res.data)
+      dispatch({type:'LOAD',payload:res.data})
+     }
+     getVideos()
+  },[dispatch])
+
 return(
         <>
         {videos.map((video) => (
@@ -54,6 +75,7 @@ return(
               </PlayButton>
             </Video>
           ))}
+           <button onClick={handleClick}>Get Videos</button>
           </>
     )
 }

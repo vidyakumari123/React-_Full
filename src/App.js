@@ -1,7 +1,6 @@
 
 import './App.css';
-import {useReducer, useState } from 'react';
-
+import { useReducer, useState } from 'react';
 import videoDB from './data/data';
 
 import AddVideo from './components/AddVideo';
@@ -12,58 +11,60 @@ import VideosContext from './context/VideosContext';
 import VideoDispatchContext from './context/VideoDispatchContext';
 import Counter from './components/Counter';
 function App() {
- console.log('render App')
-   const [mode, setMode] = useState('darkMode');
-   const [editableVideo,setEditableVideo] = useState(null);
-  
-function videoReducer(videos,action){
-    switch(action.type){
+  console.log('render App')
+  const [mode, setMode] = useState('darkMode');
+  const [editableVideo, setEditableVideo] = useState(null);
+
+  function videoReducer(videos, action) {
+    switch (action.type) {
+      case 'LOAD':
+        return action.payload;
       case 'ADD':
         return [
           ...videos,
-          {...action.payload, id: videos.length+1}
+          { ...action.payload, id: videos.length + 1 }
         ]
       case 'DELETE':
-        return videos.filter(video=>video.id!==action.payload)  
+        return videos.filter(video => video.id !== action.payload)
       case 'UPDATE':
-        const index = videos.findIndex(v=>v.id===action.payload.id)
+        const index = videos.findIndex(v => v.id === action.payload.id)
         const newVideos = [...videos]
-        newVideos.splice(index,1,action.payload)
+        newVideos.splice(index, 1, action.payload)
         setEditableVideo(null);
         return newVideos;
       default:
-        return videos  
+        return videos
     }
 
   }
 
-  const [videos,dispatch] = useReducer(videoReducer,videoDB)
+  const [videos, dispatch] = useReducer(videoReducer, [])
 
 
-  function editVideo(id){
-    setEditableVideo(videos.find(video=>video.id===id))
+  function editVideo(id) {
+    setEditableVideo(videos.find(video => video.id === id))
   }
 
   return (
-     <ThemeContext.Provider value={mode}>
+    <ThemeContext.Provider value={mode}>
       <VideosContext.Provider value={videos}>
         <VideoDispatchContext.Provider value={dispatch}>
-        <div className={`App ${mode}`} onClick={() => console.log('App')}>
-               <Counter></Counter>
-          <button
-            onClick={() =>
-              setMode(mode === 'darkMode' ? 'lightMode' : 'darkMode')
-            }
-          >
-            Mode
-          </button>
-          <AddVideo
-            editableVideo={editableVideo}
-          ></AddVideo>
-          <VideoList
-            editVideo={editVideo}
-          ></VideoList>
-        </div>
+          <div className={`App ${mode}`} onClick={() => console.log('App')}>
+            <Counter></Counter>
+            <button
+              onClick={() =>
+                setMode(mode === 'darkMode' ? 'lightMode' : 'darkMode')
+              }
+            >
+              Mode
+            </button>
+            <AddVideo
+              editableVideo={editableVideo}
+            ></AddVideo>
+            <VideoList
+              editVideo={editVideo}
+            ></VideoList>
+          </div>
         </VideoDispatchContext.Provider>
       </VideosContext.Provider>
     </ThemeContext.Provider>
