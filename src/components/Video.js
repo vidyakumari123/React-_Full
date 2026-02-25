@@ -1,12 +1,15 @@
-import { useContext } from 'react';
+import { useContext , useEffect,memo } from 'react';
 
 import ThemeContext from '../context/ThemeContext';
 import useVideoDispatch from '../hooks/VideoDispatch';
 import './Video.css';
 
-function Video({ title, id, channel = "Coder Dost", views, time, verified, children,editVideo }) {
-    const theme = useContext(ThemeContext)
-      const dispatch = useVideoDispatch()
+const Video = memo(function Video({title,id,channel="Coder Dost",views,time,verified,children,editVideo}) {
+  console.log('render Video',id)
+   const theme = useContext(ThemeContext)
+   const dispatch = useVideoDispatch()
+
+
 
       
   //  useEffect(()=>{
@@ -36,6 +39,6 @@ function Video({ title, id, channel = "Coder Dost", views, time, verified, child
       </div>
     </>
   );
-}
+})
 
 export default Video;
